@@ -94,18 +94,107 @@ Write a function that uses a for loop that, for each iteration, randomly draws 5
 - Now we can draw a histogram
 
   - **Now, let's solve the problem all in one step**
+  
+```{r}
+sim_means <- vector(mode = 'numeric', length = 10000)
+for (i in 1:10000) {
+  #Randomly draws 5 observations with a rate of 1
+  random_draws <- rexp(5, rate = 1)
+  
+  #Calculating the mean of those 5 observations
+  sim_means[i] <- mean(random_draws)
+}
+
+#converting the results into a data frame
+df_means <- data.frame(mean_values = sim_means)
+  
+  #creating a histogram from the data frame
+ggplot(df_means, aes(x = mean_values)) +
+    geom_histogram(fill = 'lightgreen', colour = 'pink', bins = 30) + 
+    labs(
+    title = "Distribution of 10,000 Sample Means",
+    x = "Sample Mean",
+    y = "Count"
+  ) +
+    theme_minimal()
+```
+  
 
 ## 2_a:
 
 - Repeat part 1 by using a `map_*()` function.
 
+```{r}
+# 1. Run the simulation 10,000 times using map_dbl
+sim_means_map <- map_dbl(1:10000, ~ mean(rexp(5, rate = 1)))
+
+# 2. Convert the vector to a data frame for ggplot2
+df_means_map <- data.frame(mean_values = sim_means_map)
+
+# 3. Generate the histogram plot
+ggplot(df_means_map, aes(x = mean_values)) +
+  geom_histogram(fill = "skyblue", color = "black", bins = 30) +
+  labs(
+    title = "Distribution of 10,000 Sample Means (Using map_dbl)",
+    x = "Sample Mean",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
 ## 2_b:
 
 - Repeat part 1 by using the `replicate()` function.
 
+```{r}
+# 1. Run the simulation 10,000 times using replicate
+sim_means_rep <- replicate(10000, mean(rexp(5, rate = 1)))
+
+# 2. Convert the vector to a data frame for ggplot2
+df_means_rep <- data.frame(mean_values = sim_means_rep)
+
+# 3. Generate the histogram plot
+ggplot(df_means_rep, aes(x = mean_values)) +
+  geom_histogram(fill = "lightpink", color = "black", bins = 30) +
+  labs(
+    title = "Distribution of 10,000 Sample Means (Using replicate)",
+    x = "Sample Mean",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
+
 ## 2_c:
 
 - Use a another for loop that will print out plots for sample sizes of 5, 10, and 20 observations (instead of just 5).
+
+```{r}
+sample_sizes <- c(5, 10, 20)
+# Run a loop where 'n' takes the value of 5, then 10, then 20
+for (n in sample_sizes) {
+  
+  # 1. Run the simulation 10,000 times using the current sample size 'n'
+  sim_means <- replicate(10000, mean(rexp(n, rate = 1)))
+  
+  # 2. Put the vector into a temporary data frame for plotting
+  df_temp <- data.frame(mean_values = sim_means)
+  
+  # 3. Create the histogram plot
+  p <- ggplot(df_temp, aes(x = mean_values)) +
+    geom_histogram(fill = "plum", color = "black", bins = 30) +
+    labs(
+      title = paste("Distribution of 10,000 Sample Means (n =", n, ")"),
+      x = "Sample Mean",
+      y = "Count"
+    ) +
+    theme_minimal()
+  
+  # 4. CRITICAL: Inside a for loop, you must explicitly print() the plot
+  print(p)
+}
+```
+
 
 # Problem 3:
 
