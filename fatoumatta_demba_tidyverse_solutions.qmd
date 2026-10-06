@@ -279,9 +279,26 @@ head(date_breakdown, 10)
 
 Given the following dates, compute the difference in **months** and **weeks** between each consecutive pair.
 
-``` r
+```{r}
 sample_dates <- c("2018-03-15", "2020-07-20", "2023-01-10", "2025-09-05")
+
+date_objects <- as.Date(sample_dates)
+weeks_diff <- diff(date_objects) / 7
+
+intervals <- interval(start = date_objects [-length(date_objects)], end = date_objects[-1])
+
+months_diff <- time_length(intervals, unit = "month")
+
+gaps_table <- data.frame(
+  From = sample_dates[-length(sample_dates)],
+  To = sample_dates[-1],
+  Diff_Weeks = round(as.numeric(weeks_diff), 2),
+  Diff_Months = round(months_diff, 2)
+)
+
+print(gaps_table)
 ```
+
 
 # Problem 6
 
