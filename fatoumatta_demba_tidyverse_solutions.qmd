@@ -237,6 +237,22 @@ output
 
 - **Solution:** coding to calculate the "standard deviation" for each variable
 
+```{r}
+sd_results <- vector(mode = "numeric", length = ncol(mtcars))
+
+# 2. Assign names to the vector positions so you know which column is which
+names(sd_results) <- colnames(mtcars)
+
+# 3. Run the for loop over every column index
+for (i in 1:ncol(mtcars)) {
+  # Calculate the standard deviation for column 'i' and save it in position 'i'
+  sd_results[i] <- sd(mtcars[[i]])
+}
+
+# 4. Print the final calculated values
+print(sd_results)
+```
+
 # Problem 4:
 
 Generate a sequence of dates from **January 1, 2015** to **December 31, 2025**, spaced by every **two months**. Extract the **year**, **quarter**, and **ISO week number** for each date.
