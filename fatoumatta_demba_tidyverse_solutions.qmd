@@ -304,6 +304,29 @@ print(gaps_table)
 
 Given a list of mixed date formats, use `map()` and `possibly()` from `purrr` to safely convert them to **Date** format and extract the **month name**.
 
-``` r
+```{r}
+library(purrr)
 date_strings <- list("2023-06-10", "2022/12/25", "15-Aug-2021", "InvalidDate")
+
+get_month_native <- function(x) {
+  # suppressWarnings hides the "failed to parse" text for InvalidDate
+  parsed_date <- suppressWarnings(parse_date_time(x, orders = c("ymd", "ydm", "dmy")))
+  
+  # label = TRUE and abbr = FALSE forces the full text string output
+  as.character(month(parsed_date, label = TRUE, abbr = FALSE))
+}
+
+safe_month_extractor <- possibly(get_month_native, otherwise = NA_character_)
+
+# map_chr forces a clean character vector output directly
+month_names <- map_chr(date_strings, safe_month_extractor)
+
+result_table <- data.frame(
+  Input_String = unlist(date_strings),
+  Month_Name   = month_names
+)
+
+print(result_table)
+
 ```
+
